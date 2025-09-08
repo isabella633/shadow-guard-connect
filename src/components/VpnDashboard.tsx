@@ -41,9 +41,39 @@ export const VpnDashboard = () => {
   const [selectedServer, setSelectedServer] = useState(servers[0]);
   const [killSwitch, setKillSwitch] = useState(true);
   const [autoConnect, setAutoConnect] = useState(false);
-  const [currentIp, setCurrentIp] = useState("192.168.1.100");
-  const [protectedIp, setProtectedIp] = useState("");
+  const [ipv4, setIpv4] = useState<string>("");
+  const [ipv6, setIpv6] = useState<string>("");
+  const [protectedIpv4, setProtectedIpv4] = useState("");
+  const [protectedIpv6, setProtectedIpv6] = useState("");
   const [connectionTime, setConnectionTime] = useState(0);
+  const [loadingIp, setLoadingIp] = useState(true);
+
+  const fetchRealIp = async () => {
+    setLoadingIp(true);
+    try {
+      // Fetch IPv4
+      const ipv4Response = await fetch('https://api.ipify.org?format=json');
+      const ipv4Data = await ipv4Response.json();
+      setIpv4(ipv4Data.ip);
+
+      // Fetch IPv6 
+      try {
+        const ipv6Response = await fetch('https://api64.ipify.org?format=json');
+        const ipv6Data = await ipv6Response.json();
+        setIpv6(ipv6Data.ip);
+      } catch {
+        setIpv6("Not available");
+      }
+    } catch (error) {
+      setIpv4("Unable to fetch");
+      setIpv6("Unable to fetch");
+    }
+    setLoadingIp(false);
+  };
+
+  useEffect(() => {
+    fetchRealIp();
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -60,12 +90,14 @@ export const VpnDashboard = () => {
       setConnectionStatus("connecting");
       setTimeout(() => {
         setConnectionStatus("connected");
-        setProtectedIp(`${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`);
+        setProtectedIpv4(`${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`);
+        setProtectedIpv6(`2001:${Math.floor(Math.random() * 9999).toString(16)}:${Math.floor(Math.random() * 9999).toString(16)}::${Math.floor(Math.random() * 9999).toString(16)}`);
         setConnectionTime(0);
       }, 2000);
     } else {
       setConnectionStatus("disconnected");
-      setProtectedIp("");
+      setProtectedIpv4("");
+      setProtectedIpv6("");
       setConnectionTime(0);
     }
   };
@@ -143,13 +175,23 @@ export const VpnDashboard = () => {
                     {connectionStatus.charAt(0).toUpperCase() + connectionStatus.slice(1)}
                   </Badge>
 
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">
-                      {connectionStatus === "connected" ? "Protected IP" : "Your IP"}
-                    </p>
-                    <p className="text-xl font-mono">
-                      {connectionStatus === "connected" ? protectedIp : currentIp}
-                    </p>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <p className="text-sm text-muted-foreground">
+                        {connectionStatus === "connected" ? "Protected IPv4" : "Your IPv4"}
+                      </p>
+                      <p className="text-lg font-mono">
+                        {loadingIp ? "Loading..." : connectionStatus === "connected" ? protectedIpv4 : ipv4}
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm text-muted-foreground">
+                        {connectionStatus === "connected" ? "Protected IPv6" : "Your IPv6"}
+                      </p>
+                      <p className="text-sm font-mono text-muted-foreground">
+                        {loadingIp ? "Loading..." : connectionStatus === "connected" ? protectedIpv6 : ipv6}
+                      </p>
+                    </div>
                   </div>
 
                   {connectionStatus === "connected" && (
