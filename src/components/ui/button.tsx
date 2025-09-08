@@ -15,6 +15,10 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        vpn: "bg-gradient-primary text-white hover:opacity-90 shadow-glow transition-all duration-300",
+        connect: "bg-vpn-connected text-white hover:bg-vpn-connected/90 shadow-connected text-lg font-semibold",
+        disconnect: "bg-vpn-disconnected text-white hover:bg-vpn-disconnected/90",
+        glass: "bg-gradient-glass backdrop-blur-sm border border-white/10 text-white hover:bg-white/10",
       },
       size: {
         default: "h-10 px-4 py-2",

@@ -47,6 +47,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        vpn: {
+          connected: "hsl(var(--vpn-connected))",
+          connecting: "hsl(var(--vpn-connecting))",
+          disconnected: "hsl(var(--vpn-disconnected))",
+          glass: "hsl(var(--vpn-glass))",
+          glow: "hsl(var(--vpn-glow))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -80,10 +87,36 @@ export default {
             height: "0",
           },
         },
+        "pulse-glow": {
+          "0%, 100%": { 
+            opacity: "1",
+            boxShadow: "0 0 20px hsl(var(--vpn-glow))" 
+          },
+          "50%": { 
+            opacity: "0.8",
+            boxShadow: "0 0 40px hsl(var(--vpn-glow))" 
+          },
+        },
+        "connecting": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "connecting": "connecting 1s linear infinite",
+      },
+      backgroundImage: {
+        "gradient-primary": "var(--gradient-primary)",
+        "gradient-security": "var(--gradient-security)",
+        "gradient-glass": "var(--gradient-glass)",
+      },
+      boxShadow: {
+        "glow": "var(--shadow-glow)",
+        "connected": "var(--shadow-connected)",
+        "glass": "var(--shadow-glass)",
       },
     },
   },
